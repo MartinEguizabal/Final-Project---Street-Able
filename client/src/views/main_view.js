@@ -20,7 +20,7 @@ MainView.prototype.render = function(){
     this.mainElement.appendChild(mapSection);
 
     var centre = {lat: 55.953251, lng: -3.188267};
-    var zoom = 13;
+    var zoom = 14;
     var map = new MapWrapper(mapTag, centre, zoom);
 
     var obstructions = new Obstructions();
