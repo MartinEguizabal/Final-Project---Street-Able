@@ -27,7 +27,8 @@ MainView.prototype.render = function(){
     obstructions.all(function(result){
 
         for(obstruction of result){
-            map.addMarker({lat: obstruction.latitude, lng: obstruction.longtitude})
+            map.addMarker(obstruction)
+            // pass in whole obstruction object
         }
     }.bind(this));
 
