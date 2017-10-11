@@ -1,3 +1,5 @@
+MainView = require('../views/main_view.js')
+
 var MapWrapper = function(container, coords, zoom) {
   // var container = document.getElementById('map-container');
   this.googleMap = new google.maps.Map(container, {
@@ -5,18 +7,14 @@ var MapWrapper = function(container, coords, zoom) {
     zoom: zoom
   });
   this.markers = [];
-  // console.log('map')
 };
 
 MapWrapper.prototype.addMarker = function(obstruction){
-  // pass in whole obstruction above
   var marker = new google.maps.Marker({
     position: {lat: obstruction.latitude, lng: obstruction.longtitude},
-    // above, drill down to coords of the obstruction object
     map: this.googleMap
   });
   this.markers.push(obstruction);
-  // add the whole object to marker array
 
   var content = '<div id="iw container">' +
                   '<div class="iw title>' +
@@ -29,23 +27,42 @@ MapWrapper.prototype.addMarker = function(obstruction){
                     '</div>' +
                   '</div>' +
                 '</div>'
-                // ULTIMATELY we have obstruction object available to display above
 
   var infoWindow = new google.maps.InfoWindow({
   content: content})
 
   google.maps.event.addListener(marker, 'click', function(){
-    // add listener to the lat long of the obstruction object
     infoWindow.open(this.googleMap, marker);
     console.log(marker)
     });
   }
 
-// MapWrapper.prototype.addClickEvent = function(){
+MapWrapper.prototype.addUserMarkerObj = function(local, latitude, longtitude, type, value, desc){
+  // var marker = new google.maps.Marker({
+  //   position: coords,
+  //   map: this.googleMap
+  // });
+  this.markers.push({location: local, lat: latitude, lng: longtitude, type: type, value: value, description: desc});
+  MainView.render()
+}
+
+// MapWrapper.prototype.addClickEvent = function(callback){
 //   google.maps.event.addListener(this.googleMap, 'click', function(event){
 //     var position = {lat: event.latLng.lat(), lng: event.latLng.lng()}
-//     this.addMarker(position);
+//     this.addUserMarkerObj(position);
 //   }.bind(this));
 //   };
 
+
+MapWrapper.prototype.clickEvent = function(callback){
+  google.maps.event.addListener(this.googleMap, 'click', function(event){
+
+    var position = {lat: event.latLng.lat(), lng: event.latLng.lng()}
+    // this.addUserMarkerObj(position);
+    callback(position);
+  }.bind(this));
+  };
+
 module.exports = MapWrapper;
+
+// click on map > fill in form with lat/lng > click submit button > causes addition of object to markers array

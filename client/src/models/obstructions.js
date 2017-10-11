@@ -36,19 +36,4 @@ Obstructions.prototype.populateObstructions = function(results){
   return obstructions;
   }
 
-// var Obstacle = require('./obstacle');
-
-// var Items = function(){
-
-//   var item1 = new Obstacle({
-//     location: "Leith Walk/Albert Street",
-//     lat: 55.962590,
-//     lng: -3.178880,
-//     type: "no dropped sidewalk",
-//     grade: 1,
-//     description: "sidewalk on corner of Leith Walk and Albert Street not dropped resulting in abrupt grade difference between road and pavement"
-//   });
-
-// }
-
 module.exports = Obstructions;

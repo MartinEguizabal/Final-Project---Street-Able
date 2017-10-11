@@ -83,6 +83,7 @@ var app = function(){
 
 window.addEventListener('load', app);
 
+
 /***/ }),
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -121,10 +122,62 @@ MainView.prototype.render = function(){
         }
     }.bind(this));
 
- 
+    var formSection = document.createElement('section');
+    formSection.innerText = "To warn other users of an obstrution add it to the map: "
+    formSection.id = 'form-section';
 
+    var locationInput = document.createElement('input');
+    locationInput.id = 'location-input';
+    locationInput.setAttribute('type', 'text');
+    locationInput.placeholder = "obstruction location"
 
+    var latBox = document.createElement('input');
+    latBox.readOnly = true;
+    latBox.id = 'lat-box';
+    latBox.setAttribute('type', 'number');
 
+    var latBoxPosition = (position) => {latBox.value = position.lat}
+    map.clickEvent(latBoxPosition);
+
+    var lngBox = document.createElement('input');
+    lngBox.readOnly = true;
+    lngBox.id = 'lng-box';
+    lngBox.setAttribute('type', 'number');
+
+    var lngBoxPosition = (position) => {lngBox.value = position.lng}
+    map.clickEvent(lngBoxPosition);
+
+    var typeInput = document.createElement('input');
+    typeInput.id = 'type-input';
+    typeInput.setAttribute('type', 'text');
+    typeInput.placeholder = "type of obstruction";
+
+    var gradeInput = document.createElement('input');
+    gradeInput.id = 'grade-input';
+    gradeInput.setAttribute('type', 'text');
+    gradeInput.placeholder = "grade of obstruction";
+
+    var descInput = document.createElement('input');
+    descInput.id = 'desc-input';
+    descInput.setAttribute('type', 'text');
+    descInput.placeholder = "description of obstruction"
+
+    var submitButton = document.createElement('button');
+    submitButton.innerText = "Submit"
+    submitButton.addEventListener('click', function(){
+        map.addUserMarkerObj(locationInput.value, latBox.value, lngBox.value, typeInput.value, gradeInput.value, descInput.value)
+    })
+
+    console.log(locationInput.value)
+
+    formSection.appendChild(locationInput);
+    formSection.appendChild(latBox);
+    formSection.appendChild(lngBox);
+    formSection.appendChild(typeInput);
+    formSection.appendChild(gradeInput);
+    formSection.appendChild(descInput);
+    formSection.appendChild(submitButton);
+    this.mainElement.appendChild(formSection);
 
   }
 
@@ -132,7 +185,9 @@ module.exports = MainView;
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+MainView = __webpack_require__(1)
 
 var MapWrapper = function(container, coords, zoom) {
   // var container = document.getElementById('map-container');
@@ -141,18 +196,14 @@ var MapWrapper = function(container, coords, zoom) {
     zoom: zoom
   });
   this.markers = [];
-  // console.log('map')
 };
 
 MapWrapper.prototype.addMarker = function(obstruction){
-  // pass in whole obstruction above
   var marker = new google.maps.Marker({
     position: {lat: obstruction.latitude, lng: obstruction.longtitude},
-    // above, drill down to coords of the obstruction object
     map: this.googleMap
   });
   this.markers.push(obstruction);
-  // add the whole object to marker array
 
   var content = '<div id="iw container">' +
                   '<div class="iw title>' +
@@ -165,26 +216,45 @@ MapWrapper.prototype.addMarker = function(obstruction){
                     '</div>' +
                   '</div>' +
                 '</div>'
-                // ULTIMATELY we have obstruction object available to display above
 
   var infoWindow = new google.maps.InfoWindow({
   content: content})
 
   google.maps.event.addListener(marker, 'click', function(){
-    // add listener to the lat long of the obstruction object
     infoWindow.open(this.googleMap, marker);
     console.log(marker)
     });
   }
 
-// MapWrapper.prototype.addClickEvent = function(){
+MapWrapper.prototype.addUserMarkerObj = function(local, latitude, longtitude, type, value, desc){
+  // var marker = new google.maps.Marker({
+  //   position: coords,
+  //   map: this.googleMap
+  // });
+  this.markers.push({location: local, lat: latitude, lng: longtitude, type: type, value: value, description: desc});
+  MainView.render()
+}
+
+// MapWrapper.prototype.addClickEvent = function(callback){
 //   google.maps.event.addListener(this.googleMap, 'click', function(event){
 //     var position = {lat: event.latLng.lat(), lng: event.latLng.lng()}
-//     this.addMarker(position);
+//     this.addUserMarkerObj(position);
 //   }.bind(this));
 //   };
 
+
+MapWrapper.prototype.clickEvent = function(callback){
+  google.maps.event.addListener(this.googleMap, 'click', function(event){
+
+    var position = {lat: event.latLng.lat(), lng: event.latLng.lng()}
+    // this.addUserMarkerObj(position);
+    callback(position);
+  }.bind(this));
+  };
+
 module.exports = MapWrapper;
+
+// click on map > fill in form with lat/lng > click submit button > causes addition of object to markers array
 
 /***/ }),
 /* 3 */
@@ -249,21 +319,6 @@ Obstructions.prototype.populateObstructions = function(results){
     }
   return obstructions;
   }
-
-// var Obstacle = require('./obstacle');
-
-// var Items = function(){
-
-//   var item1 = new Obstacle({
-//     location: "Leith Walk/Albert Street",
-//     lat: 55.962590,
-//     lng: -3.178880,
-//     type: "no dropped sidewalk",
-//     grade: 1,
-//     description: "sidewalk on corner of Leith Walk and Albert Street not dropped resulting in abrupt grade difference between road and pavement"
-//   });
-
-// }
 
 module.exports = Obstructions;
 

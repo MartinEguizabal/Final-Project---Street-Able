@@ -32,10 +32,62 @@ MainView.prototype.render = function(){
         }
     }.bind(this));
 
- 
+    var formSection = document.createElement('section');
+    formSection.innerText = "To warn other users of an obstrution add it to the map: "
+    formSection.id = 'form-section';
 
+    var locationInput = document.createElement('input');
+    locationInput.id = 'location-input';
+    locationInput.setAttribute('type', 'text');
+    locationInput.placeholder = "obstruction location"
 
+    var latBox = document.createElement('input');
+    latBox.readOnly = true;
+    latBox.id = 'lat-box';
+    latBox.setAttribute('type', 'number');
 
+    var latBoxPosition = (position) => {latBox.value = position.lat}
+    map.clickEvent(latBoxPosition);
+
+    var lngBox = document.createElement('input');
+    lngBox.readOnly = true;
+    lngBox.id = 'lng-box';
+    lngBox.setAttribute('type', 'number');
+
+    var lngBoxPosition = (position) => {lngBox.value = position.lng}
+    map.clickEvent(lngBoxPosition);
+
+    var typeInput = document.createElement('input');
+    typeInput.id = 'type-input';
+    typeInput.setAttribute('type', 'text');
+    typeInput.placeholder = "type of obstruction";
+
+    var gradeInput = document.createElement('input');
+    gradeInput.id = 'grade-input';
+    gradeInput.setAttribute('type', 'text');
+    gradeInput.placeholder = "grade of obstruction";
+
+    var descInput = document.createElement('input');
+    descInput.id = 'desc-input';
+    descInput.setAttribute('type', 'text');
+    descInput.placeholder = "description of obstruction"
+
+    var submitButton = document.createElement('button');
+    submitButton.innerText = "Submit"
+    submitButton.addEventListener('click', function(){
+        map.addUserMarkerObj(locationInput.value, latBox.value, lngBox.value, typeInput.value, gradeInput.value, descInput.value)
+    })
+
+    console.log(locationInput.value)
+
+    formSection.appendChild(locationInput);
+    formSection.appendChild(latBox);
+    formSection.appendChild(lngBox);
+    formSection.appendChild(typeInput);
+    formSection.appendChild(gradeInput);
+    formSection.appendChild(descInput);
+    formSection.appendChild(submitButton);
+    this.mainElement.appendChild(formSection);
 
   }
 
