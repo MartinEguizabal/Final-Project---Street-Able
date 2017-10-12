@@ -1,7 +1,4 @@
-// same as views/ui.js
-
 var MapWrapper = require('../models/map_wrapper.js');
-var InfoWindow = require('../models/info_window.js');
 var Obstructions = require('../models/obstructions.js')
 
 var MainView = function(mainElement){
@@ -28,7 +25,6 @@ MainView.prototype.render = function(){
 
         for(obstruction of result){
             map.addMarker(obstruction)
-            // pass in whole obstruction object
         }
     }.bind(this));
 
@@ -75,10 +71,8 @@ MainView.prototype.render = function(){
     var submitButton = document.createElement('button');
     submitButton.innerText = "Submit"
     submitButton.addEventListener('click', function(){
-        map.addUserMarkerObj(locationInput.value, latBox.value, lngBox.value, typeInput.value, gradeInput.value, descInput.value)
+        var newObstruction = {location: locationInput.value, lat: latBox.value, lng: lngBox.value, type: typeInput.value, grade: gradeInput.value, description: descInput.value};
     })
-
-    console.log(locationInput.value)
 
     formSection.appendChild(locationInput);
     formSection.appendChild(latBox);
@@ -89,6 +83,10 @@ MainView.prototype.render = function(){
     formSection.appendChild(submitButton);
     this.mainElement.appendChild(formSection);
 
+    var obstructions = new Obstructions();
+    obstructions.add(newObstruction, function(data){
+        console.log(data)
+    })
   }
 
 module.exports = MainView;

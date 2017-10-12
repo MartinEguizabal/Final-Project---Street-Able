@@ -88,10 +88,7 @@ window.addEventListener('load', app);
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// same as views/ui.js
-
 var MapWrapper = __webpack_require__(2);
-var InfoWindow = __webpack_require__(3);
 var Obstructions = __webpack_require__(4)
 
 var MainView = function(mainElement){
@@ -118,7 +115,6 @@ MainView.prototype.render = function(){
 
         for(obstruction of result){
             map.addMarker(obstruction)
-            // pass in whole obstruction object
         }
     }.bind(this));
 
@@ -165,10 +161,8 @@ MainView.prototype.render = function(){
     var submitButton = document.createElement('button');
     submitButton.innerText = "Submit"
     submitButton.addEventListener('click', function(){
-        map.addUserMarkerObj(locationInput.value, latBox.value, lngBox.value, typeInput.value, gradeInput.value, descInput.value)
+        var newObstruction = {location: locationInput.value, lat: latBox.value, lng: lngBox.value, type: typeInput.value, grade: gradeInput.value, description: descInput.value};
     })
-
-    console.log(locationInput.value)
 
     formSection.appendChild(locationInput);
     formSection.appendChild(latBox);
@@ -179,6 +173,10 @@ MainView.prototype.render = function(){
     formSection.appendChild(submitButton);
     this.mainElement.appendChild(formSection);
 
+    var obstructions = new Obstructions();
+    obstructions.add(newObstruction, function(data){
+        console.log(data)
+    })
   }
 
 module.exports = MainView;
@@ -190,7 +188,6 @@ module.exports = MainView;
 MainView = __webpack_require__(1)
 
 var MapWrapper = function(container, coords, zoom) {
-  // var container = document.getElementById('map-container');
   this.googleMap = new google.maps.Map(container, {
     center: coords,
     zoom: zoom
@@ -227,10 +224,6 @@ MapWrapper.prototype.addMarker = function(obstruction){
   }
 
 MapWrapper.prototype.addUserMarkerObj = function(local, latitude, longtitude, type, value, desc){
-  // var marker = new google.maps.Marker({
-  //   position: coords,
-  //   map: this.googleMap
-  // });
   this.markers.push({location: local, lat: latitude, lng: longtitude, type: type, value: value, description: desc});
   MainView.render()
 }
@@ -247,42 +240,15 @@ MapWrapper.prototype.clickEvent = function(callback){
   google.maps.event.addListener(this.googleMap, 'click', function(event){
 
     var position = {lat: event.latLng.lat(), lng: event.latLng.lng()}
-    // this.addUserMarkerObj(position);
-    callback(position);
   }.bind(this));
   };
 
 module.exports = MapWrapper;
 
-// click on map > fill in form with lat/lng > click submit button > causes addition of object to markers array
-
 /***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-// var InfoWindow = function(result, map){
-//   this.infoWindow = new google.maps.InfoWindow({
-//   content: "hi"
-//   });
-// }
-
-// InfoWindow.prototype.clickEvent = function(result, map){
-//   for(i = 0; i < map.markers.length; i++){
-//     // var marker = new google.maps.LatLng(result[i].latitude, result[i].longtitude);
-
-//     google.maps.event.addListener(map.markers[i], 'click', function(){
-//       this.infoWindow.open(map, map.markers[i]);
-//     }.bind(this))
-//   }
-// }
-
-// module.exports = InfoWindow;
-
-/***/ }),
+/* 3 */,
 /* 4 */
 /***/ (function(module, exports, __webpack_require__) {
-
-// same as models/films.js
 
 var Obstruction = __webpack_require__(5);
 

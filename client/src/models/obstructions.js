@@ -1,5 +1,3 @@
-// same as models/films.js
-
 var Obstruction = require('./obstruction');
 
 var Obstructions = function(){}
