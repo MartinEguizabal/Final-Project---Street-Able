@@ -8,6 +8,5 @@ mainRouter.get('/', function(req, res){
     res.json(results);    
     });
 });
-// says return everything from db
 
 module.exports = mainRouter;
