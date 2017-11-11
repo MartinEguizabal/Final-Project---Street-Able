@@ -68,7 +68,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 var MainView = __webpack_require__(1);
-var IntroWindow = __webpack_require__(6)
+var IntroWindow = __webpack_require__(2)
 
 var app = function(){
   var main = document.querySelector('#main-view');
@@ -88,7 +88,7 @@ window.addEventListener('load', app);
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var MapWrapper = __webpack_require__(2);
+var MapWrapper = __webpack_require__(3);
 var Obstructions = __webpack_require__(4)
 
 var MainView = function(mainElement){
@@ -173,138 +173,16 @@ MainView.prototype.render = function(){
     formSection.appendChild(submitButton);
     this.mainElement.appendChild(formSection);
 
-    var obstructions = new Obstructions();
-    obstructions.add(newObstruction, function(data){
-        console.log(data)
-    })
+    // var obstructions = new Obstructions();
+    // obstructions.add(newObstruction, function(data){
+    // console.log(data)
+    // })
   }
 
 module.exports = MainView;
 
 /***/ }),
 /* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-MainView = __webpack_require__(1)
-
-var MapWrapper = function(container, coords, zoom) {
-  this.googleMap = new google.maps.Map(container, {
-    center: coords,
-    zoom: zoom
-  });
-  this.markers = [];
-};
-
-MapWrapper.prototype.addMarker = function(obstruction){
-  var marker = new google.maps.Marker({
-    position: {lat: obstruction.latitude, lng: obstruction.longtitude},
-    map: this.googleMap
-  });
-  this.markers.push(obstruction);
-
-  var content = '<div id="iw container">' +
-                  '<div class="iw title>' +
-                    '<h3>Obstruction details:</h3>' +
-                    '<div class="iw content">' +
-                      '<p>Location: '+ obstruction.location + '</p>' +
-                      '<p>Type: ' + obstruction.type + '</p>' +
-                      '<p>Grade: ' + obstruction.grade + '</p>' +
-                      '<p>Description: ' + obstruction.description + '</p>' +
-                    '</div>' +
-                  '</div>' +
-                '</div>'
-
-  var infoWindow = new google.maps.InfoWindow({
-  content: content})
-
-  google.maps.event.addListener(marker, 'click', function(){
-    infoWindow.open(this.googleMap, marker);
-    console.log(marker)
-    });
-  }
-
-MapWrapper.prototype.addUserMarkerObj = function(local, latitude, longtitude, type, value, desc){
-  this.markers.push({location: local, lat: latitude, lng: longtitude, type: type, value: value, description: desc});
-  MainView.render()
-}
-
-// MapWrapper.prototype.addClickEvent = function(callback){
-//   google.maps.event.addListener(this.googleMap, 'click', function(event){
-//     var position = {lat: event.latLng.lat(), lng: event.latLng.lng()}
-//     this.addUserMarkerObj(position);
-//   }.bind(this));
-//   };
-
-
-MapWrapper.prototype.clickEvent = function(callback){
-  google.maps.event.addListener(this.googleMap, 'click', function(event){
-
-    var position = {lat: event.latLng.lat(), lng: event.latLng.lng()}
-  }.bind(this));
-  };
-
-module.exports = MapWrapper;
-
-/***/ }),
-/* 3 */,
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Obstruction = __webpack_require__(5);
-
-var Obstructions = function(){}
-
-Obstructions.prototype.makeRequest = function(url, callback){
-    var request = new XMLHttpRequest();
-    request.open("GET", url);
-    request.onload = callback;
-    request.send();
-  }
-
-Obstructions.prototype.all = function(callback){
-    console.log(this)
-    var self = this;
-    this.makeRequest("http://localhost:3000/api/obstructions", function(){
-      if(this.status !== 200) return;
-      var jsonString = this.responseText;
-      var results = JSON.parse(jsonString);
-
-      console.log(results);
-      var obstructions = self.populateObstructions(results);
-      console.log(obstructions);
-      callback(obstructions);
-    });
-  }
-
-Obstructions.prototype.populateObstructions = function(results){
-  var obstructions = [];
-
-    for(var result of results){
-      var obstruction = new Obstruction(result);
-      obstructions.push(obstruction);
-    }
-  return obstructions;
-  }
-
-module.exports = Obstructions;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports) {
-
-var Obstruction = function(result){
-  this.location = result.location;
-  this.latitude = result.lat;
-  this.longtitude = result.lng;
-  this.type = result.type;
-  this.grade = result.grade;
-  this.description = result.description;
-}
-
-module.exports = Obstruction;
-
-/***/ }),
-/* 6 */
 /***/ (function(module, exports) {
 
 var IntroWindow = function(){}
@@ -363,6 +241,129 @@ IntroWindow.prototype.render = function(){
 }
 
 module.exports = IntroWindow;
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+MainView = __webpack_require__(1)
+
+var MapWrapper = function(container, coords, zoom) {
+  this.googleMap = new google.maps.Map(container, {
+    center: coords,
+    zoom: zoom
+  });
+  this.markers = [];
+};
+
+MapWrapper.prototype.addMarker = function(obstruction){
+  var marker = new google.maps.Marker({
+    position: {lat: obstruction.latitude, lng: obstruction.longtitude},
+    map: this.googleMap
+  });
+  this.markers.push(obstruction);
+
+  var content = '<div id="iw container">' +
+                  '<div class="iw title>' +
+                    '<h3>Obstruction details:</h3>' +
+                    '<div class="iw content">' +
+                      '<p>Location: '+ obstruction.location + '</p>' +
+                      '<p>Type: ' + obstruction.type + '</p>' +
+                      '<p>Grade: ' + obstruction.grade + '</p>' +
+                      '<p>Description: ' + obstruction.description + '</p>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>'
+
+  var infoWindow = new google.maps.InfoWindow({
+  content: content})
+
+  google.maps.event.addListener(marker, 'click', function(){
+    infoWindow.open(this.googleMap, marker);
+    console.log(marker)
+    });
+  }
+
+MapWrapper.prototype.addUserMarkerObj = function(local, latitude, longtitude, type, value, desc){
+  this.markers.push({location: local, lat: latitude, lng: longtitude, type: type, value: value, description: desc});
+  MainView.render()
+}
+
+// MapWrapper.prototype.addClickEvent = function(callback){
+//   google.maps.event.addListener(this.googleMap, 'click', function(event){
+//     var position = {lat: event.latLng.lat(), lng: event.latLng.lng()}
+//     this.addUserMarkerObj(position);
+//   }.bind(this));
+//   };
+
+
+MapWrapper.prototype.clickEvent = function(callback){
+  google.maps.event.addListener(this.googleMap, 'click', function(event){
+
+    var position = {lat: event.latLng.lat(), lng: event.latLng.lng()}
+    callback(position)
+  }.bind(this));
+  };
+
+module.exports = MapWrapper;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Obstruction = __webpack_require__(5);
+
+var Obstructions = function(){}
+
+Obstructions.prototype.makeRequest = function(url, callback){
+    var request = new XMLHttpRequest();
+    request.open("GET", url);
+    request.onload = callback;
+    request.send();
+  }
+
+Obstructions.prototype.all = function(callback){
+    console.log(this)
+    var self = this;
+    this.makeRequest("http://localhost:3000/api/obstructions", function(){
+      if(this.status !== 200) return;
+      var jsonString = this.responseText;
+      var results = JSON.parse(jsonString);
+      var obstructions = self.populateObstructions(results);
+      callback(obstructions);
+    });
+  }
+
+Obstructions.prototype.populateObstructions = function(results){
+  var obstructions = [];
+
+    for(var result of results){
+      var obstruction = new Obstruction(result);
+      obstructions.push(obstruction);
+    }
+  return obstructions;
+  }
+
+Obstructions.prototype.addObstruction = function(){
+  
+}
+
+module.exports = Obstructions;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+var Obstruction = function(result){
+  this.location = result.location;
+  this.latitude = result.lat;
+  this.longtitude = result.lng;
+  this.type = result.type;
+  this.grade = result.grade;
+  this.description = result.description;
+}
+
+module.exports = Obstruction;
 
 /***/ })
 /******/ ]);

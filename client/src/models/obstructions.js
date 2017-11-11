@@ -16,10 +16,7 @@ Obstructions.prototype.all = function(callback){
       if(this.status !== 200) return;
       var jsonString = this.responseText;
       var results = JSON.parse(jsonString);
-
-      console.log(results);
       var obstructions = self.populateObstructions(results);
-      console.log(obstructions);
       callback(obstructions);
     });
   }
@@ -33,5 +30,9 @@ Obstructions.prototype.populateObstructions = function(results){
     }
   return obstructions;
   }
+
+Obstructions.prototype.addObstruction = function(){
+  
+}
 
 module.exports = Obstructions;

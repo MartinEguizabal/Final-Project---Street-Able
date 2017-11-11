@@ -83,10 +83,10 @@ MainView.prototype.render = function(){
     formSection.appendChild(submitButton);
     this.mainElement.appendChild(formSection);
 
-    var obstructions = new Obstructions();
-    obstructions.add(newObstruction, function(data){
-        console.log(data)
-    })
+    // var obstructions = new Obstructions();
+    // obstructions.add(newObstruction, function(data){
+    // console.log(data)
+    // })
   }
 
 module.exports = MainView;

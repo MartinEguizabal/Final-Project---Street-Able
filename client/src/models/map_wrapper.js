@@ -53,6 +53,7 @@ MapWrapper.prototype.clickEvent = function(callback){
   google.maps.event.addListener(this.googleMap, 'click', function(event){
 
     var position = {lat: event.latLng.lat(), lng: event.latLng.lng()}
+    callback(position)
   }.bind(this));
   };
 
